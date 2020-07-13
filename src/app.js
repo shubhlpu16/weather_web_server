@@ -2,6 +2,9 @@ const path = require('path');
 const hbs =require('hbs');
 const express = require('express');
 
+const getGeoCode = require('./utils/geocode');
+const getWeatherDetails = require('./utils/weather');
+
 const app = express();
 
 
@@ -45,11 +48,28 @@ app.get('/weather',(req,res)=>{
       error:'Address not sent in query params'
     })
   }
-  res.send({
-    location:'Rohtak',
-      forcast:'Raining',
-      address: req.query.address,
-  })
+  getGeoCode(req.query.address,(response)=>{
+    if(response.error)
+      return res.send({
+        error:response.error,
+      });
+      getWeatherDetails(response.place_details,(responseData)=>{
+        if(responseData.error)
+        return res.send({
+          error:responseData.error,
+        })
+        res.send({
+          location:response.place_details.location,
+            forcast:responseData.data,
+            icon:responseData.icon,
+            address: req.query.address,
+        })
+
+      })
+
+    }
+  )
+
 })
 
 app.get('/help/*',(req,res)=>{

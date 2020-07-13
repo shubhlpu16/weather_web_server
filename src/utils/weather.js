@@ -13,7 +13,7 @@ const getWeatherDetails=(location,callback)=>{
       .then(response=>{
         if(response.status='200')
         {const data=response.data.current
-        callback({data:`It is ${data.weather_descriptions[0]},with ${data.temperature} degrees Celcius. It feels like ${data.feelslike} degrees Celcius.There is ${data.precip}% chance of rain`});}
+        callback({data:`It is ${data.weather_descriptions[0]},with ${data.temperature} degrees Celcius. It feels like ${data.feelslike} degrees Celcius.There is ${data.precip}% chance of rain`,icon:data.weather_icons[0]});}
         else if(response.data.error)
         {
           callback('Unable to find Location')
